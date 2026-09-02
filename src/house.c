@@ -189,7 +189,6 @@ uint8_t applyRules(Room_t *r)
         else {
         CLR_BIT(r->status, BIT_FAN);
     }
-
     if (tempC(r->adc) >= TEMP_ALARM) {
         SET_BIT(r->status, BIT_ALARM);
         SET_BIT(r->status, BIT_LAMP);
