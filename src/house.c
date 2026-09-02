@@ -26,8 +26,10 @@
  *   - Nothing in this file prints anything. Printing is render.c's job.
  *
  * Smart Home Console · Day 03 midterm — G9
- * Student: <YOUR NAME HERE>
+ * Student: Asmaa Naguib Salama
  */
+#include <stddef.h>
+
 #include "house.h"
 
 /* ---------------- module-private data (NFR-03) ---------------
@@ -72,14 +74,28 @@ const Room_t *houseRooms(void)
  */
 void houseInit(void)
 {
-    /* GIVEN — the seed table. Do not change the numbers. */
     static const char *const NAMES[ROOM_COUNT] =
         { "Living", "Kitchen", "Bedroom", "Bathroom", "Hall", "Garage" };
     static const uint16_t SEED_ADC[ROOM_COUNT] = { 51U, 64U, 45U, 58U, 49U, 96U };
     static const uint8_t  SEED_OCC[ROOM_COUNT] = { 1U, 0U, 0U, 0U, 1U, 0U };
 
-    /* TODO: the loop described above. */
-    (void)NAMES; (void)SEED_ADC; (void)SEED_OCC;   /* delete these */
+    for (uint8_t i = 0U; i < ROOM_COUNT; i++) {
+        uint8_t j = 0U;
+
+        while (j < NAME_LEN - 1U && NAMES[i][j] != '\0') {
+            house[i].name[j] = NAMES[i][j];
+            j++;
+        }
+        house[i].name[j] = '\0';
+
+        house[i].adc = SEED_ADC[i];
+        house[i].status = 0U;
+        SET_BIT(house[i].status, BIT_AUTO);
+
+        if (SEED_OCC[i]) {
+            SET_BIT(house[i].status, BIT_OCCUPIED);
+        }
+    }
 }
 
 
@@ -109,8 +125,7 @@ void houseInit(void)
  */
 uint16_t tempC(uint16_t adc)
 {
-    (void)adc;      /* delete this line */
-    return 0U;      /* TODO */
+    return (uint16_t)((uint32_t)adc * 500U / 1024U);
 }
 
 
@@ -153,8 +168,38 @@ uint16_t tempC(uint16_t adc)
  */
 uint8_t applyRules(Room_t *r)
 {
-    (void)r;        /* delete this line */
-    return 0U;      /* TODO */
+    uint8_t before;
+
+    if (r == NULL) {
+        return 0U;
+    }
+
+    if (!READ_BIT(r->status, BIT_AUTO)) {
+        return 0U;
+    }
+
+    before = r->status;
+
+    if (READ_BIT(r->status, BIT_OCCUPIED)) {
+        SET_BIT(r->status, BIT_LAMP);
+    } else {
+        CLR_BIT(r->status, BIT_LAMP);
+    }
+
+    if (tempC(r->adc) >= TEMP_HOT) {
+        SET_BIT(r->status, BIT_FAN);
+    } else {
+        CLR_BIT(r->status, BIT_FAN);
+    }
+
+    if (tempC(r->adc) >= TEMP_ALARM) {
+        SET_BIT(r->status, BIT_ALARM);
+        SET_BIT(r->status, BIT_LAMP);
+    } else {
+        CLR_BIT(r->status, BIT_ALARM);
+    }
+
+    return (before != r->status) ? 1U : 0U;
 }
 
 
@@ -179,7 +224,13 @@ uint8_t applyRules(Room_t *r)
  */
 uint8_t rulesPass(void)
 {
-    return 0U;      /* TODO */
+    uint8_t changed = 0U;
+
+    for (uint8_t i = 0U; i < ROOM_COUNT; i++) {
+        changed += applyRules(&house[i]);
+    }
+
+    return changed;
 }
 
 
@@ -197,8 +248,15 @@ uint8_t rulesPass(void)
  */
 uint8_t countRoomsWith(uint8_t bit)
 {
-    (void)bit;      /* delete this line */
-    return 0U;      /* TODO */
+    uint8_t count = 0U;
+
+    for (uint8_t i = 0U; i < ROOM_COUNT; i++) {
+        if (READ_BIT(house[i].status, bit)) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 
@@ -227,6 +285,9 @@ uint8_t countRoomsWith(uint8_t bit)
  */
 uint32_t sumAdc(const Room_t *rooms, uint8_t n)
 {
-    (void)rooms; (void)n;   /* delete this line */
-    return 0UL;             /* TODO */
+    if (n == 0U) {
+        return 0UL;
+    }
+
+    return (uint32_t)rooms[n - 1U].adc + sumAdc(rooms, (uint8_t)(n - 1U));
 }
