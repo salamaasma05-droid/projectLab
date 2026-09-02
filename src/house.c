@@ -125,7 +125,9 @@ void houseInit(void)
  */
 uint16_t tempC(uint16_t adc)
 {
-    return (uint16_t)((uint32_t)adc * 500U / 1024U);
+    
+    uint32_t temp = (uint32_t)adc * 500U;
+    return (uint16_t)(temp / 1024U);
 }
 
 
