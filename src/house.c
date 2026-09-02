@@ -125,7 +125,7 @@ void houseInit(void)
  */
 uint16_t tempC(uint16_t adc)
 {
-    
+
     uint32_t temp = (uint32_t)adc * 500U;
     return (uint16_t)(temp / 1024U);
 }
@@ -173,24 +173,20 @@ uint8_t applyRules(Room_t *r)
     uint8_t before;
 
     if (r == NULL) {
-        return 0U;
-    }
-
+        return 0U; }
     if (!READ_BIT(r->status, BIT_AUTO)) {
-        return 0U;
-    }
+        return 0U;}
 
     before = r->status;
 
     if (READ_BIT(r->status, BIT_OCCUPIED)) {
-        SET_BIT(r->status, BIT_LAMP);
-    } else {
-        CLR_BIT(r->status, BIT_LAMP);
-    }
+        SET_BIT(r->status, BIT_LAMP);} 
+        else {
+        CLR_BIT(r->status, BIT_LAMP);}
 
     if (tempC(r->adc) >= TEMP_HOT) {
-        SET_BIT(r->status, BIT_FAN);
-    } else {
+        SET_BIT(r->status, BIT_FAN);} 
+        else {
         CLR_BIT(r->status, BIT_FAN);
     }
 
@@ -203,6 +199,7 @@ uint8_t applyRules(Room_t *r)
 
     return (before != r->status) ? 1U : 0U;
 }
+    
 
 
 /* ==========================================================================
