@@ -246,7 +246,7 @@ uint8_t rulesPass(void)
  */
 uint8_t countRoomsWith(uint8_t bit)
 {
-    
+
     uint8_t count = 0U;
 
     for (uint8_t i = 0U; i < ROOM_COUNT; i++) {
@@ -284,7 +284,8 @@ uint8_t countRoomsWith(uint8_t bit)
  */
 uint32_t sumAdc(const Room_t *rooms, uint8_t n)
 {
-    if (n == 0U) {
+    if (n == 0U)
+     {
         return 0UL;
     }
 
