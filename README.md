@@ -6,10 +6,6 @@ The house draws itself already. Six rooms, a lamp and a fan in each, a
 temperature sensor and a motion sensor. What is missing is everything that
 *knows* anything: the data, the rules that decide what should be on, and the
 menu actions that let a person change it.
-
-**Course:** Microcontroller-Based Systems (90 Hours) · Day 03 midterm
-**Team:** G9 · **Language:** C99 · no `malloc`, no `float`, no libraries
-
 ---
 
 ## Fill this in before you start
@@ -17,11 +13,10 @@ menu actions that let a person change it.
 | Field | Your answer |
 |-------|-------------|
 | **Full name** | |
-| **Student ID** | |
 | **Email** | |
 | **Group** | G9 |
-| **Date started** | |
-| **Date submitted** | |
+| **Date started** | 02-09-2026|
+| **Date submitted** | 03-09-2026|
 
 Put your name at the top of `src/house.c` and `src/ui.c` too — both files have
 a `Student: <YOUR NAME HERE>` line waiting for it.
